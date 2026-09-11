@@ -1,0 +1,468 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: 'Cinzel', serif;
+  --font-heritage: 'Cinzel Decorative', 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-indic: 'Rozha One', serif;
+
+  /* Deep Midnight Tones (Cosmic night skies) */
+  --color-midnight-950: #04060A;
+  --color-midnight-900: #080C14;
+  --color-midnight-850: #0D1321;
+  --color-midnight-800: #131B2E;
+  --color-midnight-700: #1B2640;
+
+  /* Mystic Forest Tones (Ancient sacred groves) */
+  --color-forest-950: #030C08;
+  --color-forest-900: #071710;
+  --color-forest-850: #0B2218;
+  --color-forest-800: #112F22;
+  --color-forest-700: #1A4232;
+
+  /* Sunset Warmth & Crimson Twilight */
+  --color-sunset-900: #350F08;
+  --color-sunset-800: #5C1A0E;
+  --color-sunset-600: #B83A14;
+  --color-sunset-500: #E05326;
+  --color-sunset-400: #F46C3E;
+
+  /* Auspicious Saffron Highlights */
+  --color-saffron-600: #EA580C;
+  --color-saffron-500: #F97316;
+  --color-saffron-400: #FB923C;
+  --color-saffron-300: #FDBA74;
+
+  /* Royal Heritage Gold */
+  --color-gold-600: #CA8A04;
+  --color-gold-500: #EAB308;
+  --color-gold-400: #FACC15;
+  --color-gold-300: #FDE047;
+  --color-gold-200: #FEF08A;
+
+  /* Heritage Metallics */
+  --color-heritage-bronze: #854D0E;
+  --color-heritage-copper: #C2410C;
+
+  /* Atmospheric Shadows */
+  --shadow-gold-glow: 0 0 25px -3px rgba(245, 158, 11, 0.3);
+  --shadow-gold-rim: 0 0 0 1px rgba(245, 158, 11, 0.35), 0 0 20px -2px rgba(245, 158, 11, 0.2);
+  --shadow-saffron-glow: 0 0 25px -3px rgba(249, 115, 22, 0.32);
+  --shadow-panel: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
+  --shadow-panel-elevated: 0 25px 50px -12px rgba(0, 0, 0, 0.95), 0 0 30px -5px rgba(245, 158, 11, 0.15);
+}
+
+/* ==========================================================================
+   GLOBAL RESET & ROOT DEFAULTS
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #04060A;
+  color: #F1F5F9;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Custom Selection Highlight */
+::selection {
+  background-color: rgba(245, 158, 11, 0.35);
+  color: #FEF08A;
+}
+
+/* Custom Scrollbar for RPG feel */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #06090F;
+}
+::-webkit-scrollbar-thumb {
+  background: #1F293D;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 158, 11, 0.4);
+}
+
+/* ==========================================================================
+   KEYFRAME ANIMATIONS
+   ========================================================================== */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 16px 0 rgba(245, 158, 11, 0.2), inset 0 0 10px 0 rgba(245, 158, 11, 0.05);
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 32px 3px rgba(245, 158, 11, 0.45), inset 0 0 20px 0 rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.65);
+  }
+}
+
+@keyframes ambient-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(14px, -18px) scale(1.08);
+    opacity: 0.45;
+  }
+}
+
+@keyframes subtle-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes particle-drift {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.9);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-90px) translateX(25px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL UTILITY STYLES
+   ========================================================================== */
+
+/* 1. Cinematic Page Backgrounds */
+.bv-bg-cosmic {
+  background-color: #04060A;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(224, 83, 38, 0.18) 0%, transparent 60%),
+    radial-gradient(circle at 10% 25%, rgba(17, 47, 34, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 90% 40%, rgba(234, 179, 8, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 100%, rgba(13, 19, 33, 0.95) 0%, transparent 70%);
+  background-attachment: fixed;
+}
+
+/* Star dust / ambient aura overlay */
+.bv-bg-ambient-stars {
+  background-image: radial-gradient(1px 1px at 20px 30px, rgba(254, 240, 138, 0.4), rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 150px 90px, rgba(251, 146, 60, 0.35), rgba(0,0,0,0)),
+                    radial-gradient(1px 1px at 300px 220px, rgba(254, 240, 138, 0.3), rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 450px 140px, rgba(234, 179, 8, 0.35), rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 600px 400px;
+}
+
+/* 2. Glass Panels */
+.bv-glass-panel {
+  background: rgba(8, 12, 20, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(234, 179, 8, 0.2);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(254, 240, 138, 0.08);
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bv-glass-panel-elevated {
+  background: rgba(13, 19, 33, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(234, 179, 8, 0.32);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95), 0 0 30px -5px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(254, 240, 138, 0.15);
+  border-radius: 1.25rem;
+}
+
+.bv-glass-subtle {
+  background: rgba(19, 27, 46, 0.45);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(234, 179, 8, 0.12);
+  border-radius: 0.75rem;
+}
+
+.bv-panel-interactive {
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+.bv-panel-interactive:hover {
+  border-color: rgba(234, 179, 8, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px -10px rgba(0, 0, 0, 0.9), 0 0 24px -2px rgba(245, 158, 11, 0.2);
+}
+
+/* 3. Heritage Borders & Decorative Accents */
+.bv-heritage-border {
+  position: relative;
+  border: 1px solid rgba(234, 179, 8, 0.28);
+}
+.bv-heritage-border::before,
+.bv-heritage-border::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  pointer-events: none;
+}
+.bv-heritage-border::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid #FACC15;
+  border-left: 2px solid #FACC15;
+}
+.bv-heritage-border::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid #FACC15;
+  border-right: 2px solid #FACC15;
+}
+
+.bv-divider-ornate {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1.5rem 0;
+}
+.bv-divider-ornate::before,
+.bv-divider-ornate::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.4), transparent);
+}
+
+/* 4. Section Headings & Heritage Typography */
+.bv-gold-text {
+  font-family: var(--font-serif);
+  background: linear-gradient(135deg, #FFFBEB 0%, #FDE047 30%, #EAB308 70%, #B45309 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 14px rgba(234, 179, 8, 0.25);
+}
+
+.bv-saffron-text {
+  font-family: var(--font-serif);
+  background: linear-gradient(135deg, #FFF7ED 0%, #FDBA74 25%, #F97316 70%, #C2410C 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 14px rgba(249, 115, 22, 0.25);
+}
+
+.bv-heading-hero {
+  font-family: var(--font-heritage);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bv-heading-section {
+  font-family: var(--font-serif);
+  letter-spacing: 0.05em;
+  color: #F8FAFC;
+}
+
+/* 5. Game-Style Buttons */
+.bv-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: #0B0F17;
+  background: linear-gradient(135deg, #FDE047 0%, #F59E0B 50%, #D97706 100%);
+  border: 1px solid #FEF08A;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 15px rgba(217, 119, 6, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.bv-btn-primary:hover {
+  background: linear-gradient(135deg, #FEF08A 0%, #FBBF24 50%, #EA580C 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.55), 0 0 20px rgba(245, 158, 11, 0.4);
+}
+.bv-btn-primary:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.bv-btn-secondary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1.5rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  color: #FDE047;
+  background: rgba(16, 23, 38, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+}
+.bv-btn-secondary:hover {
+  background: rgba(234, 179, 8, 0.12);
+  border-color: rgba(245, 158, 11, 0.65);
+  color: #FEF08A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 16px rgba(245, 158, 11, 0.25);
+}
+.bv-btn-secondary:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.bv-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
+  color: #94A3B8;
+  background: transparent;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+.bv-btn-ghost:hover {
+  color: #FDE047;
+  border-color: rgba(234, 179, 8, 0.4);
+  background: rgba(234, 179, 8, 0.05);
+}
+
+/* 6. Quest & Lore Badges */
+.bv-badge-saffron {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FDBA74;
+  background: rgba(234, 88, 12, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 9999px;
+}
+
+.bv-badge-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #FDE047;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: 9999px;
+}
+
+/* 7. Subtle Game Animation Classes */
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3.5s ease-in-out infinite;
+}
+
+.animate-ambient-drift {
+  animation: ambient-drift 12s ease-in-out infinite;
+}
+
+.animate-particle {
+  animation: particle-drift 7s linear infinite;
+}
+
+/* 8. Responsive Architecture Helpers */
+.bv-container-cinematic {
+  width: 100%;
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* Desktop 3-Column Composition Layout Skeleton (Phase 5 Foundation) */
+.bv-layout-desktop-triad {
+  display: grid;
+  grid-template-columns: 280px 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1280px) {
+  .bv-layout-desktop-triad {
+    grid-template-columns: 240px 1fr 340px;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .bv-layout-desktop-triad {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile Vertical Adventure Stream Flow */
+.bv-mobile-adventure-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
