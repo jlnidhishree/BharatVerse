@@ -5,18 +5,10 @@ import {
   Shield,
   MapPin,
   Cpu,
-  Flame,
-  CheckCircle2,
-  ChevronRight,
-  Layers,
-  Smartphone,
-  Monitor,
-  Tablet,
   Dice5,
   Languages as LanguagesIcon,
   Bot
 } from 'lucide-react'
-
 
 import {
   AVATARS,
@@ -28,32 +20,58 @@ import {
 import { recommendJourney } from './services/journeyRecommendation.ts'
 import type { RecommendationRequest } from './types/explorer.ts'
 
-function App() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'ai-engine' | 'data-models' | 'responsive'>('overview')
-  const [pulseCount, setPulseCount] = useState(0)
+import { LanguageSelector } from './components/create-explorer/LanguageSelector.tsx'
+import { ExplorerProgress } from './components/create-explorer/ExplorerProgress.tsx'
+import { CharacterPreview } from './components/create-explorer/CharacterPreview.tsx'
+import { AICompanion, type CompanionMood } from './components/create-explorer/AICompanion.tsx'
+import { AvatarSelector } from './components/create-explorer/AvatarSelector.tsx'
+import { PlayerInfoForm } from './components/create-explorer/PlayerInfoForm.tsx'
+import { InterestSelector } from './components/create-explorer/InterestSelector.tsx'
+import type { AgeGroupId, LanguageCode, InterestId } from './types/explorer.ts'
 
-  // Interactive AI Engine test state
-  const [testRegion, setTestRegion] = useState<string>('karnataka')
-  const [testInterests, setTestInterests] = useState<string[]>(['history', 'traditional_games'])
-  const [testAgeGroup, setTestAgeGroup] = useState<string>('13-16')
-  const [testLanguage, setTestLanguage] = useState<string>('en')
+function App() {
+  const [activeTab, setActiveTab] = useState<'create-explorer' | 'ai-engine' | 'data-models'>('create-explorer')
+
+  // Core Explorer Creation Journey State (Steps 1-5)
+  const [currentStep, setCurrentStep] = useState<number>(3)
+  const [playerName, setPlayerName] = useState<string>('Arjun of Bharat')
+  const [avatarId, setAvatarId] = useState<string>('explorer')
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<AgeGroupId>('13-16')
+  const [selectedLanguage, setSelectedLanguage] = useState<LanguageCode>('en')
+  const [selectedInterests, setSelectedInterests] = useState<InterestId[]>([
+    'history',
+    'traditional_games',
+    'art_culture'
+  ])
+  const [startingRegion, setStartingRegion] = useState<string>('karnataka')
+  const [companionMood] = useState<CompanionMood>('guiding')
 
   // Live computed recommendation from deterministic engine
   const liveRecommendation = useMemo(() => {
     const request: RecommendationRequest = {
-      startingRegion: testRegion,
-      interests: testInterests,
-      ageGroup: testAgeGroup,
-      language: testLanguage
+      startingRegion: startingRegion,
+      interests: selectedInterests,
+      ageGroup: selectedAgeGroup,
+      language: selectedLanguage
     }
     return recommendJourney(request)
-  }, [testRegion, testInterests, testAgeGroup, testLanguage])
+  }, [startingRegion, selectedInterests, selectedAgeGroup, selectedLanguage])
+
+  // Resolve active avatar object
+  const activeAvatar = useMemo(() => {
+    return AVATARS.find(a => a.id === avatarId) || AVATARS[0]
+  }, [avatarId])
+
+  // Resolve active interests objects
+  const activeInterestsList = useMemo(() => {
+    return INTERESTS.filter(i => selectedInterests.includes(i.id))
+  }, [selectedInterests])
 
   const toggleInterest = (id: string) => {
-    setTestInterests(prev =>
-      prev.includes(id)
+    setSelectedInterests(prev =>
+      prev.includes(id as InterestId)
         ? prev.filter(item => item !== id)
-        : [...prev, id]
+        : [...prev, id as InterestId]
     )
   }
 
@@ -74,28 +92,66 @@ function App() {
       />
 
       {/* Header / Top Navigation Bar */}
-      <header className="relative z-10 border-b border-amber-500/20 bg-midnight-950/70 backdrop-blur-md">
-        <div className="bv-container-cinematic py-4 flex items-center justify-between">
+      <header className="relative z-10 border-b border-amber-500/20 bg-midnight-950/80 backdrop-blur-md">
+        <div className="bv-container-cinematic py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/40 shadow-gold-glow">
+            <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/40 shadow-gold-glow">
               <Compass className="w-5 h-5 text-amber-400 animate-spin" style={{ animationDuration: '24s' }} />
               <div className="absolute inset-0 rounded-lg border border-amber-400/30 animate-pulse" />
             </div>
             <div>
-              <span className="bv-gold-text text-xl tracking-wider font-bold block leading-none">
+              <span className="bv-gold-text text-lg sm:text-xl tracking-wider font-bold block leading-none">
                 BHARATVERSE
               </span>
-              <span className="text-[10px] tracking-widest text-amber-400/70 uppercase">
-                AI Cultural Odyssey • SIH26208
+              <span className="text-[9px] sm:text-[10px] tracking-widest text-amber-400/80 uppercase font-mono">
+                AI CULTURAL ODYSSEY
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <span className="bv-badge-saffron hidden sm:inline-flex">
-              <Flame className="w-3 h-3 text-orange-400" />
-              Data & AI Layer Active
-            </span>
+            {/* Navigation Mode Switcher: Journey vs AI Oracle Matrix vs Cultural Codex */}
+            <div className="hidden sm:flex items-center gap-1 bg-midnight-900/90 p-1 rounded-lg border border-amber-500/20 text-xs">
+              <button
+                onClick={() => setActiveTab('create-explorer')}
+                className={`px-3 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all ${
+                  activeTab === 'create-explorer'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-amber-200'
+                }`}
+              >
+                Genesis Journey
+              </button>
+              <button
+                onClick={() => setActiveTab('ai-engine')}
+                className={`px-3 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all flex items-center gap-1 ${
+                  activeTab === 'ai-engine'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-amber-200'
+                }`}
+              >
+                <Bot className="w-3 h-3" />
+                AI Oracle Matrix
+              </button>
+              <button
+                onClick={() => setActiveTab('data-models')}
+                className={`px-3 py-1 rounded-md text-[11px] font-semibold uppercase tracking-wider transition-all flex items-center gap-1 ${
+                  activeTab === 'data-models'
+                    ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 font-bold shadow-sm'
+                    : 'text-slate-400 hover:text-amber-200'
+                }`}
+              >
+                <Shield className="w-3 h-3" />
+                Cultural Codex
+              </button>
+            </div>
+
+            <LanguageSelector
+              compact
+              currentLanguage={selectedLanguage}
+              onLanguageChange={(l) => setSelectedLanguage(l.code as LanguageCode)}
+            />
+
             <div className="bv-badge-gold">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping mr-1" />
               Engine Online
@@ -105,206 +161,205 @@ function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="relative z-10 bv-container-cinematic py-8 md:py-12 flex-1 flex flex-col justify-center">
-        {/* Hero Title & Cultural Fantasy Badge */}
-        <div className="text-center max-w-3xl mx-auto mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium tracking-widest uppercase mb-4">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            SIH 2026 Problem Statement SIH26208 (Toys & Games)
-          </div>
-
-          <h1 className="bv-heading-hero text-4xl sm:text-5xl md:text-6xl font-black mb-4">
-            <span className="bv-gold-text">BHARAT</span>
-            <span className="bv-saffron-text">VERSE</span>
-          </h1>
-
-          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto font-light leading-relaxed">
-            An AI-powered cultural adventure gaming universe where ancient Indian heritage,
-            epic folklore, and cinematic RPG exploration converge.
-          </p>
-
-          {/* Ornate Divider with Diamond Motif */}
-          <div className="bv-divider-ornate max-w-md mx-auto my-5">
-            <span className="text-amber-400/80 text-xs">◆</span>
-            <span className="text-amber-400 text-sm">✦</span>
-            <span className="text-amber-400/80 text-xs">◆</span>
-          </div>
-
-          {/* Interactive Navigation Tabs */}
-          <div className="flex flex-wrap justify-center gap-2 p-1.5 rounded-xl bg-midnight-900/80 border border-amber-500/20 max-w-fit mx-auto">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
-                activeTab === 'overview'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 shadow-md font-bold'
-                  : 'text-slate-400 hover:text-amber-200'
-              }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('ai-engine')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all flex items-center gap-1.5 ${
-                activeTab === 'ai-engine'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 shadow-md font-bold'
-                  : 'text-slate-400 hover:text-amber-200'
-              }`}
-            >
-              <Bot className="w-3.5 h-3.5" />
-              AI Recommendation Test
-            </button>
-            <button
-              onClick={() => setActiveTab('data-models')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
-                activeTab === 'data-models'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 shadow-md font-bold'
-                  : 'text-slate-400 hover:text-amber-200'
-              }`}
-            >
-              Data Models
-            </button>
-            <button
-              onClick={() => setActiveTab('responsive')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
-                activeTab === 'responsive'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-midnight-950 shadow-md font-bold'
-                  : 'text-slate-400 hover:text-amber-200'
-              }`}
-            >
-              Responsive Matrix
-            </button>
-          </div>
-        </div>
-
-        {/* Tab 1: System Overview & Test Card */}
-        {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto w-full">
-            {/* System Status Panel */}
-            <div className="bv-glass-panel bv-heritage-border p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-serif tracking-widest text-amber-400/80 uppercase">
-                    Architecture Diagnostic
-                  </span>
-                  <Shield className="w-5 h-5 text-amber-400" />
-                </div>
-                <h3 className="bv-heading-section text-xl font-bold text-amber-100 mb-2">
-                  Data Layer Online
-                </h3>
-                <p className="text-slate-400 text-xs leading-relaxed mb-4">
-                  The data layer, avatar archetypes, regional metadata, and deterministic local recommendation service are fully active.
-                </p>
-
-                <div className="space-y-2">
-                  {[
-                    'ExplorerProfile Interface Standardized',
-                    '5 Avatar Archetypes Defined',
-                    '3 Age Group Difficulty Tiers (8-12, 13-16, 17+)',
-                    '6 Multilingual Options (EN, HI, KN, TA, TE, ML)',
-                    '8 Cultural Interests (History, Games, etc.)',
-                    '5 Starting Regions + Extensible Registry',
-                    'Deterministic AI Journey Engine Built',
-                    'FastAPI Drop-in Adapter Ready'
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs text-slate-300">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
+      <main className="relative z-10 bv-container-cinematic py-6 md:py-10 flex-1 flex flex-col justify-center">
+        {/* Main Character Creation Experience */}
+        {activeTab === 'create-explorer' && (
+          <div className="max-w-7xl mx-auto w-full space-y-7">
+            {/* Hero Title & Cultural Fantasy Badge */}
+            <div className="text-center max-w-3xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium tracking-widest uppercase mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                Ancient Indian Cultural RPG • SIH26208
               </div>
 
-              <div className="pt-6 mt-6 border-t border-amber-500/10 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500">Core Status:</span>
-                <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Fully Operational
-                </span>
+              <h1 className="bv-heading-hero text-3xl sm:text-5xl md:text-6xl font-black mb-3">
+                <span className="bv-gold-text">CREATE YOUR </span>
+                <span className="bv-saffron-text">EXPLORER</span>
+              </h1>
+
+              <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto font-light leading-relaxed">
+                Step into the living chronicles of Bharat. Shape your identity, align your archetype,
+                and choose the cultural paths that will guide your AI-powered odyssey.
+              </p>
+
+              {/* Ornate Divider with Diamond Motif */}
+              <div className="bv-divider-ornate max-w-md mx-auto my-4">
+                <span className="text-amber-400/80 text-xs">◆</span>
+                <span className="text-amber-400 text-sm">✦</span>
+                <span className="text-amber-400/80 text-xs">◆</span>
               </div>
             </div>
 
-            {/* Visual Experience Showcase */}
-            <div className="bv-glass-panel-elevated p-6 flex flex-col justify-between md:scale-105 border-amber-500/40 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bv-badge-gold text-[10px] tracking-widest uppercase">
-                  Personalization Engine
-                </span>
+            {/* Cinematic 3-Column Character Creation Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Left Column: Quest Progression Panel */}
+              <div className="lg:col-span-3">
+                <ExplorerProgress
+                  currentStep={currentStep}
+                  onStepClick={(stepId) => setCurrentStep(stepId)}
+                />
               </div>
 
-              <div>
-                <div className="flex items-center justify-between mb-4 mt-1">
-                  <span className="text-xs font-serif tracking-widest text-orange-400 uppercase">
-                    Core Innovation
-                  </span>
-                  <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-                </div>
-                <h3 className="bv-heading-section text-xl font-bold text-amber-100 mb-2">
-                  Dynamic Cultural Quest
-                </h3>
-                <p className="text-slate-300 text-xs leading-relaxed mb-4">
-                  "The player does not simply choose a game. The system learns who the player is and creates a personalized cultural journey."
-                </p>
+              {/* Center Column: Archetype Revelation & Character Crucible */}
+              <div className="lg:col-span-5">
+                <CharacterPreview
+                  avatarId={avatarId}
+                  playerName={playerName}
+                  startingRegion={startingRegion}
+                  interests={selectedInterests}
+                />
+              </div>
 
-                {/* Interactive Action Tester */}
-                <div className="p-4 rounded-xl bg-midnight-950/60 border border-amber-500/20 mb-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-slate-400">Interaction Energy:</span>
-                    <span className="bv-gold-text text-sm font-bold">{pulseCount} Pulses</span>
+              {/* Right Column: AI Companion Panel & Explorer State */}
+              <div className="lg:col-span-4 space-y-4">
+                {/* Mitra AI Companion */}
+                <AICompanion
+                  mood={companionMood}
+                  title="Cultural Oracle"
+                  speakerName="Mitra AI"
+                  explorerName={playerName}
+                  selectedInterests={selectedInterests}
+                />
+
+                {/* Player Summary: Explorer State */}
+                <div className="bv-glass-panel p-4 space-y-2.5">
+                  <div className="flex items-center justify-between border-b border-amber-500/15 pb-2">
+                    <span className="text-[10px] text-amber-400 uppercase font-bold tracking-wider font-serif">
+                      EXPLORER STATE
+                    </span>
+                    <span className="bv-badge-gold text-[9px] px-1.5 py-0.5">
+                      REACTIVE
+                    </span>
                   </div>
-                  <button
-                    onClick={() => {
-                      setPulseCount(prev => prev + 1)
-                      setActiveTab('ai-engine')
-                    }}
-                    className="w-full bv-btn-primary text-xs py-2.5"
-                  >
-                    <span>Launch Recommendation Test</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
 
-              <div className="text-[11px] text-amber-400/70 text-center italic">
-                Ready for "CREATE YOUR EXPLORER" component phase
+                  <div className="space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between text-slate-400">
+                      <span>Name:</span>
+                      <strong className="text-amber-200 font-serif">{playerName || '(Unnamed Explorer)'}</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-400">
+                      <span>Archetype:</span>
+                      <strong className="text-amber-200">{activeAvatar.name}</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-400">
+                      <span>Age Group:</span>
+                      <strong className="text-amber-200">{selectedAgeGroup}</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-slate-400">
+                      <span>Language:</span>
+                      <strong className="text-amber-200 uppercase">{selectedLanguage}</strong>
+                    </div>
+                    <div className="flex flex-col gap-1 text-slate-400 pt-1 border-t border-slate-800/80">
+                      <div className="flex items-center justify-between">
+                        <span>Interests:</span>
+                        <strong className="text-amber-300 font-mono text-[11px]">
+                          {selectedInterests.length > 0
+                            ? `${selectedInterests.length} Paths Chosen`
+                            : 'None Chosen'}
+                        </strong>
+                      </div>
+                      {activeInterestsList.length > 0 && (
+                        <div className="text-[10px] text-slate-300 truncate">
+                          {activeInterestsList.map(i => i.title.split('&')[0].trim()).slice(0, 3).join(' • ')}
+                          {activeInterestsList.length > 3 ? ` +${activeInterestsList.length - 3} more` : ''}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Architecture Card */}
-            <div className="bv-glass-panel bv-heritage-border p-6 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs font-serif tracking-widest text-amber-400/80 uppercase">
-                    Code Structure
-                  </span>
-                  <Layers className="w-5 h-5 text-amber-400" />
-                </div>
-                <h3 className="bv-heading-section text-xl font-bold text-amber-100 mb-2">
-                  Preserved Layout
-                </h3>
-                <p className="text-slate-400 text-xs leading-relaxed mb-4">
-                  Clean separation between data schemas, mock service, and future UI components:
-                </p>
+            {/* Interactive Step Area: Smooth Stage Based on currentStep */}
+            <div className="pt-2">
+              {currentStep === 1 && (
+                <PlayerInfoForm
+                  name={playerName}
+                  ageGroup={selectedAgeGroup}
+                  language={selectedLanguage}
+                  onNameChange={setPlayerName}
+                  onAgeGroupChange={setSelectedAgeGroup}
+                  onLanguageChange={setSelectedLanguage}
+                  onContinue={() => setCurrentStep(2)}
+                />
+              )}
 
-                <div className="p-3 rounded-lg bg-midnight-950/80 border border-slate-800 text-[11px] font-mono text-amber-200/90 space-y-1">
-                  <div>src/types/explorer.ts</div>
-                  <div>src/data/explorerData.ts</div>
-                  <div>src/services/journeyRecommendation.ts</div>
-                  <div>src/components/create-explorer/*</div>
-                  <div>src/pages/CreateExplorer.tsx</div>
+              {currentStep === 2 && (
+                <div className="bv-glass-panel p-5 md:p-6">
+                  <AvatarSelector
+                    selectedAvatar={avatarId}
+                    onSelectAvatar={(id) => setAvatarId(id)}
+                    onBack={() => setCurrentStep(1)}
+                    onContinue={() => setCurrentStep(3)}
+                  />
                 </div>
-              </div>
+              )}
 
-              <div className="pt-6 mt-6 border-t border-amber-500/10">
-                <button
-                  onClick={() => setActiveTab('data-models')}
-                  className="w-full bv-btn-secondary text-xs py-2"
-                >
-                  <span>Inspect Data Models</span>
-                </button>
-              </div>
+              {currentStep === 3 && (
+                <div className="bv-glass-panel p-5 md:p-6">
+                  <InterestSelector
+                    selectedInterests={selectedInterests}
+                    onInterestsChange={(updated) => setSelectedInterests(updated)}
+                    onBack={() => setCurrentStep(2)}
+                    onContinue={() => setCurrentStep(4)}
+                  />
+                </div>
+              )}
+
+              {currentStep === 4 && (
+                <div className="bv-glass-panel p-6 text-center space-y-4">
+                  <div className="bv-badge-saffron inline-flex">
+                    Step 4: Region Selection (Upcoming Phase)
+                  </div>
+                  <h4 className="bv-heading-section text-xl font-bold text-amber-200">
+                    The Geographic Sandboxes of Bharat
+                  </h4>
+                  <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
+                    In the next phase, you will anchor your explorer at a regional cultural crossroads—Karnataka,
+                    Tamil Nadu, Kerala, Andhra Pradesh, or Telangana.
+                  </p>
+                  <div className="p-4 rounded-xl bg-midnight-950/80 border border-amber-500/20 max-w-md mx-auto text-xs text-slate-400">
+                    Current Anchor: <strong className="text-amber-300 capitalize">{startingRegion}</strong> • Signature Game: <strong className="text-amber-200">Chowka Bara</strong>
+                  </div>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentStep(3)}
+                      className="bv-btn-secondary text-xs"
+                    >
+                      ← Back to Interests
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 5 && (
+                <div className="bv-glass-panel p-6 text-center space-y-4">
+                  <div className="bv-badge-gold inline-flex">
+                    Step 5: AI Journey Revelation (Future Phase)
+                  </div>
+                  <h4 className="bv-heading-section text-xl font-bold text-amber-200">
+                    Your Personalized Cultural Quest
+                  </h4>
+                  <p className="text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
+                    Recommended Quest: <strong className="text-amber-300 font-serif">"{liveRecommendation.recommendedQuest}"</strong>
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentStep(3)}
+                      className="bv-btn-secondary text-xs"
+                    >
+                      ← Back to Interests
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
+
+
 
         {/* Tab 2: Live AI Recommendation Engine Test */}
         {activeTab === 'ai-engine' && (
@@ -325,9 +380,9 @@ function App() {
                     {STARTING_REGIONS.map(reg => (
                       <button
                         key={reg.id}
-                        onClick={() => setTestRegion(reg.id)}
+                        onClick={() => setStartingRegion(reg.id)}
                         className={`p-2.5 rounded-lg text-left transition-all border ${
-                          testRegion === reg.id
+                          startingRegion === reg.id
                             ? 'bg-amber-500/20 border-amber-400 text-amber-200 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
                             : 'bg-midnight-950/70 border-slate-800 text-slate-400 hover:border-amber-500/30'
                         }`}
@@ -344,14 +399,14 @@ function App() {
                   <div className="flex items-center justify-between border-b border-amber-500/20 pb-3">
                     <span className="text-xs font-serif tracking-wider text-amber-400 uppercase font-bold flex items-center gap-1.5">
                       <Sparkles className="w-4 h-4" />
-                      2. Cultural Interests ({testInterests.length} Selected)
+                      2. Cultural Interests ({selectedInterests.length} Selected)
                     </span>
                     <span className="text-[10px] text-slate-400 uppercase">Multi-select</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-2">
                     {INTERESTS.map(interest => {
-                      const isSelected = testInterests.includes(interest.id)
+                      const isSelected = selectedInterests.includes(interest.id)
                       return (
                         <button
                           key={interest.id}
@@ -381,9 +436,9 @@ function App() {
                         {AGE_GROUPS.map(ag => (
                           <button
                             key={ag.id}
-                            onClick={() => setTestAgeGroup(ag.id)}
+                            onClick={() => setSelectedAgeGroup(ag.id)}
                             className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                              testAgeGroup === ag.id
+                              selectedAgeGroup === ag.id
                                 ? 'bg-amber-500/20 border-amber-400 text-amber-200'
                                 : 'bg-midnight-950/70 border-slate-800 text-slate-400 hover:border-amber-500/30'
                             }`}
@@ -399,8 +454,8 @@ function App() {
                         4. Language
                       </span>
                       <select
-                        value={testLanguage}
-                        onChange={e => setTestLanguage(e.target.value)}
+                        value={selectedLanguage}
+                        onChange={e => setSelectedLanguage(e.target.value as LanguageCode)}
                         className="w-full bg-midnight-950/80 border border-slate-800 text-xs text-amber-200 rounded-lg p-2 focus:border-amber-400 outline-none"
                       >
                         {LANGUAGES.map(lang => (
@@ -471,7 +526,7 @@ function App() {
                           Target Region
                         </span>
                         <div className="text-base font-bold text-orange-200 capitalize">
-                          {testRegion.replace('_', ' ')}
+                          {startingRegion.replace('_', ' ')}
                         </div>
                         <span className="text-[10px] text-slate-400">
                           Primary cultural sandbox
@@ -627,74 +682,7 @@ function App() {
           </div>
         )}
 
-        {/* Tab 4: Responsive Matrix Foundation */}
-        {activeTab === 'responsive' && (
-          <div className="max-w-4xl mx-auto w-full">
-            <div className="bv-glass-panel p-6 space-y-6">
-              <div>
-                <h3 className="bv-heading-section text-lg font-bold text-amber-200 mb-1 flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-amber-400" />
-                  Phase 5 Responsive Architecture Blueprint
-                </h3>
-                <p className="text-slate-400 text-xs">
-                  Layout behavior mapped for the upcoming Create Explorer interface.
-                </p>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Desktop Spec */}
-                <div className="p-4 rounded-xl bg-midnight-900/70 border border-amber-500/30">
-                  <div className="flex items-center gap-2 text-amber-300 mb-2">
-                    <Monitor className="w-4 h-4" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Desktop View</span>
-                  </div>
-                  <div className="text-xs text-slate-300 space-y-1.5 font-light">
-                    <p className="text-amber-200/90 font-medium">Cinematic 3-Column Triad:</p>
-                    <div className="p-2 rounded bg-midnight-950 text-[10px] space-y-1 border border-amber-500/10">
-                      <div>Col 1: Quest Progression</div>
-                      <div>Col 2: Central Avatar / Hero Preview</div>
-                      <div>Col 3: Interactive Selection Panels</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tablet Spec */}
-                <div className="p-4 rounded-xl bg-midnight-900/70 border border-amber-500/30">
-                  <div className="flex items-center gap-2 text-orange-300 mb-2">
-                    <Tablet className="w-4 h-4" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Tablet View</span>
-                  </div>
-                  <div className="text-xs text-slate-300 space-y-1.5 font-light">
-                    <p className="text-orange-200/90 font-medium">Intelligent Reorganization:</p>
-                    <div className="p-2 rounded bg-midnight-950 text-[10px] space-y-1 border border-orange-500/10">
-                      <div>- Scaled character presentation</div>
-                      <div>- Stacked progression metrics</div>
-                      <div>- Priority drawer for customization</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mobile Spec */}
-                <div className="p-4 rounded-xl bg-midnight-900/70 border border-amber-500/30">
-                  <div className="flex items-center gap-2 text-amber-400 mb-2">
-                    <Smartphone className="w-4 h-4" />
-                    <span className="text-xs font-bold uppercase tracking-wider">Mobile View</span>
-                  </div>
-                  <div className="text-xs text-slate-300 space-y-1.5 font-light">
-                    <p className="text-amber-300/90 font-medium">Vertical Adventure Flow:</p>
-                    <div className="p-2 rounded bg-midnight-950 text-[10px] space-y-1 border border-amber-500/10">
-                      <div>1. Character Hero View</div>
-                      <div>2. Avatar & Archetype</div>
-                      <div>3. Player Info & Interests</div>
-                      <div>4. Region & AI Preview</div>
-                      <div>5. Create My Journey Action</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Next Phase Preparation Banner */}
         <div className="mt-8 text-center">

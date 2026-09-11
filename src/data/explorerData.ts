@@ -144,59 +144,99 @@ export const DEFAULT_LANGUAGE: LanguageOption = LANGUAGES[0]
 export const INTERESTS: Interest[] = [
   {
     id: 'history',
-    title: 'History',
-    shortDescription: 'Ancient empires, monumental architecture, and pivotal historical epochs.',
+    title: 'History & Civilizations',
+    shortDescription: 'Explore ancient kingdoms, forgotten cities, archaeological wonders, and the civilizations that shaped Bharat.',
     icon: 'Landmark',
-    culturalFocus: 'Monuments, dynasties, trade routes, and epigraphs'
-  },
-  {
-    id: 'mythology',
-    title: 'Mythology',
-    shortDescription: 'Epic sagas of the Ramayana & Mahabharata, deities, and timeless allegories.',
-    icon: 'Scroll',
-    culturalFocus: 'Legends, moral parables, sacred mountains, and divine lore'
-  },
-  {
-    id: 'freedom_fighters',
-    title: 'Freedom Fighters',
-    shortDescription: 'Heroes of India’s independence, fearless revolutionaries, and tribal uprisings.',
-    icon: 'Flag',
-    culturalFocus: 'National struggles, regional rebellion heroes, and patriot lore'
+    category: 'Ancient Dynasties',
+    culturalFocus: 'Monuments, dynasties, trade routes, and epigraphs',
+    themeColor: '#EAB308',
+    accentGlow: 'rgba(234, 179, 8, 0.35)',
+    keywords: ['Kingdoms', 'Archaeology', 'Dynasties'],
+    explorationHint: 'Unlock heritage quests'
   },
   {
     id: 'traditional_games',
-    title: 'Traditional Games',
-    shortDescription: 'Indigenous board games of wit, ancient dice, and heritage strategy sports.',
+    title: 'Ancient Board Games',
+    shortDescription: "Discover traditional games, strategic thinking, ancient play systems, and the stories behind India's historic games.",
     icon: 'Dice5',
-    culturalFocus: 'Pallanguzhi, Chowka Bara, Chaturanga, and board mechanics'
-  },
-  {
-    id: 'festivals',
-    title: 'Festivals',
-    shortDescription: 'Vibrant harvest festivals, temple pageants, and seasonal community rituals.',
-    icon: 'Sparkles',
-    culturalFocus: 'Carnivals, sacred traditions, festive music, and community spirit'
+    category: 'Play & Strategy',
+    culturalFocus: 'Pallanguzhi, Chowka Bara, Chaturanga, and board mechanics',
+    themeColor: '#F97316',
+    accentGlow: 'rgba(249, 115, 22, 0.35)',
+    keywords: ['Chowka Bara', 'Pallanguzhi', 'Strategy'],
+    explorationHint: 'Master ancestral game boards'
   },
   {
     id: 'art_culture',
-    title: 'Art & Culture',
-    shortDescription: 'Classical dance forms, temple sculptures, folk crafts, and theatrical arts.',
+    title: 'Sacred Arts',
+    shortDescription: 'Journey through temple art, sacred symbolism, traditional painting, sculpture, and spiritual expression.',
     icon: 'Palette',
-    culturalFocus: 'Kathakali, Bharatanatyam, bronze casting, and mural paintings'
+    category: 'Sacred Iconography',
+    culturalFocus: 'Temple sculptures, bronze casting, mural paintings, and sacred geometry',
+    themeColor: '#A855F7',
+    accentGlow: 'rgba(168, 85, 247, 0.35)',
+    keywords: ['Temple Art', 'Sculpture', 'Symbolism'],
+    explorationHint: 'Decode temple aesthetics'
   },
   {
-    id: 'science_knowledge',
-    title: 'Science & Ancient Knowledge',
-    shortDescription: 'Vedic mathematics, astronomical observatories, metallurgy, and Ayurveda.',
-    icon: 'Atom',
-    culturalFocus: 'Astronomical yantras, herbal wisdom, metallurgy, and water engineering'
+    id: 'mythology',
+    title: 'Folklore & Mythology',
+    shortDescription: 'Explore epic tales, regional legends, folk heroes, myths, and stories passed through generations.',
+    icon: 'BookOpen',
+    category: 'Epic Folklore',
+    culturalFocus: 'Epic legends, moral parables, sacred mountains, and divine lore',
+    themeColor: '#38BDF8',
+    accentGlow: 'rgba(56, 189, 248, 0.35)',
+    keywords: ['Epic Sagas', 'Folk Legends', 'Myths'],
+    explorationHint: 'Unravel timeless myths'
   },
   {
-    id: 'regional_stories',
-    title: 'Regional Stories',
-    shortDescription: 'Local folk legends, village balladeer tales, and oral traditions unique to each land.',
-    icon: 'Compass',
-    culturalFocus: 'Oral history, folk ballads, guardian spirits, and community lore'
+    id: 'music_dance',
+    title: 'Classical Music & Dance',
+    shortDescription: 'Discover ragas, rhythms, classical dance traditions, instruments, and living performance heritage.',
+    icon: 'Music',
+    category: 'Living Heritage',
+    culturalFocus: 'Carnatic, Hindustani, classical dance mudras, and indigenous instruments',
+    themeColor: '#EC4899',
+    accentGlow: 'rgba(236, 72, 153, 0.35)',
+    keywords: ['Ragas', 'Bharatanatyam', 'Rhythms'],
+    explorationHint: 'Feel the sacred rhythms'
+  },
+  {
+    id: 'architecture',
+    title: 'Architecture & Temples',
+    shortDescription: 'Explore magnificent temples, ancient structures, sacred geometry, and architectural heritage.',
+    icon: 'Castle',
+    category: 'Sacred Architecture',
+    culturalFocus: 'Dravidian gopurams, Hoysala friezes, stepwells, and rock-cut shrines',
+    themeColor: '#F59E0B',
+    accentGlow: 'rgba(245, 158, 11, 0.35)',
+    keywords: ['Gopurams', 'Acoustics', 'Stepwells'],
+    explorationHint: 'Explore monumental wonders'
+  },
+  {
+    id: 'festivals',
+    title: 'Traditions & Festivals',
+    shortDescription: 'Experience cultural celebrations, rituals, traditional practices, and the festivals of Bharat.',
+    icon: 'Sparkles',
+    category: 'Living Celebrations',
+    culturalFocus: 'Carnivals, seasonal harvest rites, festive music, and community spirit',
+    themeColor: '#FB923C',
+    accentGlow: 'rgba(251, 146, 60, 0.35)',
+    keywords: ['Utsavas', 'Seasonal Rites', 'Carnivals'],
+    explorationHint: 'Join sacred rituals'
+  },
+  {
+    id: 'nature',
+    title: 'Nature & Heritage',
+    shortDescription: "Journey through mountains, forests, rivers, wildlife, and the landscapes connected to India's cultural heritage.",
+    icon: 'Mountain',
+    category: 'Sacred Landscapes',
+    culturalFocus: 'Western Ghats, sacred groves, sacred rivers, and botanical heritage',
+    themeColor: '#10B981',
+    accentGlow: 'rgba(16, 185, 129, 0.35)',
+    keywords: ['Western Ghats', 'Sacred Groves', 'Rivers'],
+    explorationHint: 'Traverse sacred terrains'
   }
 ]
 

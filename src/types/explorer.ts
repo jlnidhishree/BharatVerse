@@ -73,11 +73,14 @@ export interface LanguageOption {
  */
 export type InterestId =
   | 'history'
-  | 'mythology'
-  | 'freedom_fighters'
   | 'traditional_games'
-  | 'festivals'
   | 'art_culture'
+  | 'mythology'
+  | 'music_dance'
+  | 'architecture'
+  | 'festivals'
+  | 'nature'
+  | 'freedom_fighters'
   | 'science_knowledge'
   | 'regional_stories';
 
@@ -87,6 +90,11 @@ export interface Interest {
   shortDescription: string;
   icon: string; // Lucide icon identifier
   culturalFocus: string;
+  category?: string;
+  themeColor?: string;
+  accentGlow?: string;
+  keywords?: string[];
+  explorationHint?: string;
 }
 
 /**
